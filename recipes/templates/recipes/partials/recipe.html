@@ -1,8 +1,11 @@
 <div class="recipe recipe-list-item">
+    {% if recipe.cover %}
     <div class="recipe-cover">
-        <a href="{% url 'recipes:recipe' recipe.id %}"></a>
+        <a href="{% url 'recipes:recipe' recipe.id %}">
             <img src="{{ recipe.cover.url }}" alt="Temporario" class="">
+        </a>
     </div>
+    {% endif %}
     <div class="recipe-title-container">
         <h2 class="recipe-title">
             <a href="{% url 'recipes:recipe' recipe.id %}">
@@ -13,18 +16,29 @@
     <div class="recipe-author">
         <span class="recipe-author-item">
             <i class="fas fa-user"></i>
-            {{ recipe.author.first_name }} {{ recipe.author.last_name }}
+            {% if recipe.author is not None %}
+                {% if recipe.author.first_name %}
+                    {{ recipe.author.first_name }} {{ recipe.author.last_name }}
+                {% else %}
+                    {{ recipe.author.username }}
+                {% endif %}
+            {% else %}
+                Desconhecido
+            {% endif %}
         </span>
         <span class="recipe-author-item">
             <i class="fas fa-calendar-alt"></i>
             {{ recipe.created_at|date:"d/m/Y" }} às {{ recipe.created_at|date:"h:i" }}
         </span>
-        <span class="recipe-author-item">
-            <a href="/recipes/category/cafe-da-manha/">
-                <i class="fas fa-layer-group"></i>
-                <span>{{ recipe.category.name }}</span>
-            </a>
-        </span>
+
+        {% if recipe.category is not None %}
+            <span class="recipe-author-item">
+                <a href="{% url 'recipes:category' recipe.category.id %}">
+                    <i class="fas fa-layer-group"></i>
+                    <span>{{ recipe.category.name }}</span>
+                </a>
+            </span>
+        {% endif %}
     </div>
 
     <div class="recipe-content">
