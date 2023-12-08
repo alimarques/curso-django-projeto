@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import resolve, reverse
 
 from recipes import views
+from recipes.models import Category, Recipe, User
 
 
 class RecipeViewsTest(TestCase):
@@ -25,6 +26,36 @@ class RecipeViewsTest(TestCase):
             'Nenhuma receita por enquanto',
             response.content.decode('utf-8')
         )
+    
+    def test_recipe_home_template_loads_recipes(self):
+        category = Category.objects.create(
+            name='Category'
+        )
+        author = User.objects.create_user(
+            first_name='user',
+            last_name='name',
+            username='username',
+            password='123456',
+            email='username@gmail.com',
+        )
+        recipe = Recipe.objects.create(
+            title = 'title',
+            description = 'description',
+            slug = 'slug',
+            preparation_time = 10,
+            preparation_time_unit = 'preparation_time_unit',
+            servings = 3,
+            servings_unit = 'servings_unit',
+            preparation_steps = 'preparation_steps',
+            preparation_steps_is_html = False,
+            is_published = True,
+            category = category,
+            author = author,
+        )
+
+        response = self.client.get(reverse('recipes:home'))
+        
+        self.assertEqual(len(response.context['recipes']), 1)
 
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(
@@ -49,4 +80,3 @@ class RecipeViewsTest(TestCase):
             reverse('recipes:recipe', kwargs={'id':1})
         )
         self.assertEqual(response.status_code, 404)
-        
