@@ -12,7 +12,9 @@ class RecipeTestBase(TestCase):
             name=name
         )
     
-    def make_author(self, first_name='user', last_name='name', username='username', password='123456', email='username@gmail.com'):
+    def make_author(self, first_name='user', last_name='name',
+                    username='username', password='123456',
+                    email='username@gmail.com'):
         return User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
@@ -21,7 +23,13 @@ class RecipeTestBase(TestCase):
             email=email,
         )
     
-    def make_recipe(self, title = 'title', description = 'description', slug = 'slug', preparation_time = 10, preparation_time_unit = 'preparation_time_unit', servings = 3, servings_unit = 'servings_unit', preparation_steps = 'preparation_steps', preparation_steps_is_html = False, is_published = True, category_data=None, author_data=None):
+    def make_recipe(self, title = 'title', description = 'description',
+                    slug = 'slug', preparation_time = 10,
+                    preparation_time_unit = 'preparation_time_unit',
+                    servings = 3, servings_unit = 'servings_unit',
+                    preparation_steps = 'preparation_steps',
+                    preparation_steps_is_html = False, is_published = True,
+                    category_data=None, author_data=None):
         if category_data is None:
             category_data = {}
         
