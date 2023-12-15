@@ -25,7 +25,7 @@ class RecipeModelTest(RecipeTestBase):
         recipe = Recipe(
             title = 'title',
             description = 'description',
-            slug = 'slug',
+            slug = 'recipe-slug-for-no-default',
             preparation_time = 1,
             preparation_time_unit = 'preparation_time_unit',
             servings = 5,
