@@ -1,3 +1,5 @@
+import os
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http.response import Http404
@@ -7,6 +9,7 @@ from utils.recipes.pagination import make_pagination
 
 from .models import Recipe
 
+PER_PAGE = int(os.environ.get('PER_PAGE', 9))
 
 def home(request):
     recipes = Recipe.objects.filter(
@@ -16,7 +19,7 @@ def home(request):
     page_object, pagination_range = make_pagination(
         request,
         recipes,
-        10,
+        PER_PAGE,
     )
 
     return render(request, 'recipes/pages/home.html', context={
@@ -35,7 +38,7 @@ def category(request, category_id):
     page_object, pagination_range = make_pagination(
         request,
         recipes,
-        10,
+        PER_PAGE,
     )
 
     return render(request, 'recipes/pages/category.html', context={
@@ -74,7 +77,7 @@ def search(request):
     page_object, pagination_range = make_pagination(
         request,
         recipes,
-        10,
+        PER_PAGE,
     )
 
     return render(request, 'recipes/pages/search.html', {
