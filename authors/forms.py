@@ -12,6 +12,16 @@ def add_attr(field, attr_name, attr_new_val):
 def add_placeholder(field, placeholder_val):
     add_attr(field, 'placeholder', placeholder_val)
 
+def strong_password(password):
+    regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')
+    if not regex.match(password):
+        raise ValidationError((
+            'A senha precisa ter letra, número'
+            ' e caracter especial.'
+            ),
+            code='Inválida'
+        )
+
 class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,10 +31,10 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['last_name'], 'Ex: Santos')
         add_placeholder(self.fields['password'], 'Digite sua senha')
 
-    password_confirm = forms.CharField(
+    password = forms.CharField(
         required=True,
         widget=forms.PasswordInput(attrs={
-            'placeholder': 'Confirme sua senha'
+            'placeholder': 'Insira sua senha'
         }),
         error_messages={
             'required': 'A senha não pode ser vazia'
@@ -32,12 +42,19 @@ class RegisterForm(forms.ModelForm):
         help_text=(
             'A senha precisa ter letra, número'
             ' e caracter especial.'
-        )
+        ),
+        validators=[strong_password]
     )
 
-    labels = {
-        'password_confirm': 'Repita a senha',
-    }
+    password_confirm = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Confirme sua senha'
+        }),
+        error_messages={
+            'required': 'A senha não pode ser vazia'
+        }
+    )
     
     class Meta:
         model = User
@@ -55,6 +72,7 @@ class RegisterForm(forms.ModelForm):
             'username': 'Usuário',
             'email': 'E-mail',
             'password': 'Senha',
+            'password_confirm': 'Repita a senha',
         }
 
         help_texts = {
