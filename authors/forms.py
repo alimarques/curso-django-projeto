@@ -30,12 +30,11 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['first_name'], 'Ex: Maria')
         add_placeholder(self.fields['last_name'], 'Ex: Santos')
         add_placeholder(self.fields['password'], 'Digite sua senha')
+        add_placeholder(self.fields['password_confirm'], 'Confirme sua senha')
 
     password = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Insira sua senha'
-        }),
+        widget=forms.PasswordInput(),
         error_messages={
             'required': 'A senha não pode ser vazia'
         },
@@ -43,17 +42,17 @@ class RegisterForm(forms.ModelForm):
             'A senha precisa ter letra, número'
             ' e caracter especial.'
         ),
-        validators=[strong_password]
+        validators=[strong_password],
+        label='Senha',
     )
 
     password_confirm = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Confirme sua senha'
-        }),
+        widget=forms.PasswordInput(),
         error_messages={
             'required': 'A senha não pode ser vazia'
-        }
+        },
+        label='Repita a senha',
     )
     
     class Meta:
@@ -63,7 +62,6 @@ class RegisterForm(forms.ModelForm):
             'last_name',
             'username',
             'email',
-            'password',
         ]
 
         labels = {
@@ -71,8 +69,6 @@ class RegisterForm(forms.ModelForm):
             'last_name': 'Sobrenome',
             'username': 'Usuário',
             'email': 'E-mail',
-            'password': 'Senha',
-            'password_confirm': 'Repita a senha',
         }
 
         help_texts = {
@@ -90,7 +86,6 @@ class RegisterForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={
                 'class': 'input text-input',
             }),
-            'password': forms.PasswordInput()
         }
     
     def clean_password(self):
