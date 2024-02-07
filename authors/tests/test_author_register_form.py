@@ -22,6 +22,7 @@ class AuthorRegisterFormUnitTest(TestCase):
     @parameterized.expand([
         ('first_name', 'Nome social'),
         ('password', 'A senha precisa ter letra, número e caracter especial.'),
+        ('username', 'O nome de usuário precisa ter letras ou números'),
     ])
     def test_fields_help_texts_is_correct(self, field, needed_value):
         form = RegisterForm()
@@ -55,11 +56,29 @@ class AuthorRegisterFormIntegrationTest(TestCase):
     
     @parameterized.expand([
         ('username', 'Esse campo não pode ser vazio'),
+        ('first_name', 'Escreva seu primero nome'),
+        ('last_name', 'Escreva seu sobrenome'),
         ('password', 'A senha não pode ser vazia'),
         ('password_confirm', 'A senha não pode ser vazia'),
+        ('email', 'Preencha seu email'),
     ])
     def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
         url = reverse('authors:create')
         response = self.client.post(url, data=self.form_data, follow=True)
-        self.assertIn(msg, response.content.decode('utf-8'))
+        #self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get(field))
+
+    def test_username_field_min_length_must_be_4(self):
+        self.form_data['username'] = 'Mar'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        msg = 'Usuário precisa ter no mínimo 4 caracteres'
+        self.assertIn(msg, response.context['form'].errors.get('username'))
+    
+    def test_username_field_max_length_must_be_50(self):
+        self.form_data['username'] = 'a' * 51
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+        msg = 'Usuário precisa ter no máximo 50 caracteres'
+        self.assertIn(msg, response.context['form'].errors.get('username'))
