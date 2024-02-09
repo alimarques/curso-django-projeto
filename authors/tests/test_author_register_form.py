@@ -82,3 +82,29 @@ class AuthorRegisterFormIntegrationTest(TestCase):
         response = self.client.post(url, data=self.form_data, follow=True)
         msg = 'Usuário precisa ter no máximo 50 caracteres'
         self.assertIn(msg, response.context['form'].errors.get('username'))
+    
+    def test_password_field_have_lower_upper_case_letters_and_numbers(self):
+        self.form_data['password'] = 'abc123'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'A senha precisa ter letra, número e caracter especial.'
+
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+    
+    def test_password_and_password_confirmation_are_equal(self):
+        self.form_data['password'] = 'Abc@abc123'
+        self.form_data['password_confirm'] = 'Abc@abc123!'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'As senhas devem ser idênticas'
+
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+
+        self.form_data['password'] = 'Abc@abc123'
+        self.form_data['password_confirm'] = 'Abc@abc123'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        self.assertNotIn(msg, response.content.decode('utf-8'))
