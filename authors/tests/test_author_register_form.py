@@ -113,3 +113,38 @@ class AuthorRegisterFormIntegrationTest(TestCase):
         url = reverse('authors:create')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+    
+    def test_username_field_contains_only_letters(self):
+        self.form_data['first_name'] = 'Luis1'
+        url = reverse('authors:create')
+        self.client.post(url, data=self.form_data, follow=True)
+
+        response = self.client.post(url, data=self.form_data, follow=True)
+    
+        msg = 'São aceitos somente letras.'
+
+        self.assertIn(msg, response.context['form'].errors.get('first_name'))
+        self.assertIn(msg, response.content.decode('utf-8'))
+
+    def test_password_field_dont_contains_reserved_word(self):
+        self.form_data['password'] = '123Wos@124senha2'
+        self.form_data['password_confirm'] = '123Wos@124senha2'
+        url = reverse('authors:create')
+        self.client.post(url, data=self.form_data, follow=True)
+
+        response = self.client.post(url, data=self.form_data, follow=True)
+    
+        msg = 'Não digite "senha" na senha'
+
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+
+    def test_email_field_must_be_unique(self):
+        url = reverse('authors:create')
+        self.client.post(url, data=self.form_data, follow=True)
+
+        response = self.client.post(url, data=self.form_data, follow=True)
+    
+        msg = 'O email já está em uso.'
+
+        self.assertIn(msg, response.context['form'].errors.get('email'))
+        self.assertIn(msg, response.content.decode('utf-8'))
