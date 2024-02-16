@@ -407,6 +407,11 @@ h6 {
     color: var(--color-debug-dark);
 }
 
+/* Authors */
+.login-message {
+    margin: 1rem 0;
+}
+
 /* Generic */
 .center {
     text-align: center;

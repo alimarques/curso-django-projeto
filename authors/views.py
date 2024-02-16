@@ -63,7 +63,7 @@ def login_create(request):
     else:
         messages.error(request, 'Usuário ou senha inválido(s)')
 
-    return redirect(login_url)
+    return redirect(reverse('authors:dashboard'))
 
 @login_required(login_url='authors:login', redirect_field_name='next')
 def logout_view(request):
@@ -75,3 +75,7 @@ def logout_view(request):
     
     logout(request)
     return redirect(reverse('authors:login'))
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashboard(request):
+    return render(request, 'authors/pages/dashboard.html')
