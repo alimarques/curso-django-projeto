@@ -2,11 +2,11 @@
     <div class="login-message">
         Você está logado como
         {{ request.user.username }}.
-
+        <a href="{% url 'authors:dashboard' %}">Veja suas receitas</a> ou
         <form class="inline-form" action="{% url 'authors:logout' %}" method='POST'>
             {% csrf_token %}
             <input type="hidden" name="username" value="{{ request.user.username }}">
-            <button class="plaintext-button" type='submit'>Clique aqui</button>
+            <button class="plaintext-button" type='submit'>clique aqui</button>
         </form> para deslogar.
     </div>
 {% endif %}
